@@ -48,7 +48,7 @@ async def start(message: types.Message):
 
 @dp.message_handler(commands=['stop'])
 async def start(message: types.Message):
-    await message.delete()
+    message.delete()
     if message.from_user.id == 136817688:
         sys.exit()
 
@@ -75,13 +75,14 @@ async def message(message: types.Message):
         message_text = replace_chars(message.text.lower(), symbols).split()
         for mess in message_text:
             for word in bad_words:
-                if (fuzz.ratio(mess, word) > 50):
-                    await message.delete()
-                    await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
-                    await bot.send_message(message.from_user.id, message.text)
+                if (fuzz.ratio(mess, word) > 70):
+                    #await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
+                    #await bot.send_message(message.from_user.id, message.text)
                     for admin in admins:
                         bot.send_message(admin, message)
+                    await bot.delete_message(message.chat.id, message.message_id)
     else:
+        """
         mute_date = mute[message.from_user.id].split().split("-").split(":")
         date = str(message.date).split().split("-").split(":")
         if mute_date[3] - date[3] > 2 or mute_date[2] < date[2] or mute_date[1] < date[1] or mute_date[0] < date[0]:
@@ -92,17 +93,58 @@ async def message(message: types.Message):
             for mess in message_text:
                 for word in bad_words:
                     if (fuzz.ratio(mess, word) > 70):
-                        await message.delete()
-                        await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
+                        message.delete()
                         await bot.send_message(message.from_user.id, message.text)
                         for admin in admins:
                             await bot.send_message(admin, message)
+                        await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
+
                         
         else:
             message.delete()
-            bot.send_message(message.from_user.id, f"Извените, но у вас временный мут. Время до конца мута: {2 - mute_date[3] - date[3]}")
+            bot.send_message(message.from_user.id, f"Извините, но у вас временный мут. Время до конца мута: {2 - mute_date[3] - date[3]}")
+        """
+        #bot.send_message(message.from_user.id, "Извините, но у вас мут.")
+        await bot.delete_message(message.chat.id, message.message_id)
 
+# обработчик всех сообщений
+@dp.edited_message_handler()
+async def message(message: types.Message):
+    if str(message.from_user.id) not in mute:
+        message_text = replace_chars(message.text.lower(), symbols).split()
+        for mess in message_text:
+            for word in bad_words:
+                if (fuzz.ratio(mess, word) > 80):
+                    #await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
+                    #await bot.send_message(message.from_user.id, message.text)
+                    for admin in admins:
+                        bot.send_message(admin, message)
+                    await bot.delete_message(message.chat.id, message.message_id)
+    else:
+        """
+        mute_date = mute[message.from_user.id].split().split("-").split(":")
+        date = str(message.date).split().split("-").split(":")
+        if mute_date[3] - date[3] > 2 or mute_date[2] < date[2] or mute_date[1] < date[1] or mute_date[0] < date[0]:
+            mute.pop(message.from_user.id)
+            with open('mute.json', 'w') as f:
+                json.dump(mute, f)
+            message_text = replace_chars(message.text.lower(), symbols).split()
+            for mess in message_text:
+                for word in bad_words:
+                    if (fuzz.ratio(mess, word) > 70):
+                        message.delete()
+                        await bot.send_message(message.from_user.id, message.text)
+                        for admin in admins:
+                            await bot.send_message(admin, message)
+                        await bot.send_message(message.from_user.id, "Извините, но бот посчитал это сообщение неприемлимым. Ниже предоставленно сообщение на которое ругается бот.")
 
+                        
+        else:
+            message.delete()
+            bot.send_message(message.from_user.id, f"Извините, но у вас временный мут. Время до конца мута: {2 - mute_date[3] - date[3]}")
+        """
+        #bot.send_message(message.from_user.id, "Извините, но у вас мут.")
+        await bot.delete_message(message.chat.id, message.message_id)
 
 # запуск бота
 if __name__ == '__main__':
