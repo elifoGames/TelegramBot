@@ -97,7 +97,7 @@ async def message(message: types.Message):
                                 except:
                                     pass
                         try:
-                            mute_list[str(int(message.date)), f"text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}."]
+                            mute_list[str(int(message.date))] = f"text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}."
                             write_json(mute_list_file, mute_list)
                         except:
                             print(f"Ошибка записи в mute_list. text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}.")
