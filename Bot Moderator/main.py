@@ -11,6 +11,7 @@ async def start(message: types.Message):
                 await bot.send_message(admin, "Ошибка отправки сообщения.")
             except:
                 pass
+            
 @dp.message_handler(commands=['ban'])
 async def ban(message: types.Message):
     for admin in admins:
@@ -73,6 +74,18 @@ async def message(message: types.Message):
         admins.append(message.from_user.id)
         write_json(admins_file, admins)
 
+@dp.message_handler(commands=["send_mute"])
+def send_mute():
+    for admin in admins:
+        if admin == message.from_user.id:
+            bot.reply(mute)
+
+@dp.message_handler(commands=["send_mute_list"])
+def send_mute_list():
+    for admin in admins:
+        if admin == message.from_user.id:
+            bot.reply(mute_list)
+
 # обработчик всех сообщений
 @dp.message_handler()
 async def message(message: types.Message):
@@ -97,7 +110,7 @@ async def message(message: types.Message):
                                 except:
                                     pass
                         try:
-                            mute_list[str(int(message.date))] = f"text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}."
+                            mute_list[str(message.date)] = f"text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}."
                             write_json(mute_list_file, mute_list)
                         except:
                             print(f"Ошибка записи в mute_list. text: {message.text}, first_name: {message.from_user.first_name}, username: {message.from_user.username}, user_id: {message.from_user.id}, chat_id: {message.chat.id}.")
@@ -121,18 +134,6 @@ async def message(message: types.Message):
                         return
         else:
             await message.delete()
-
-@dp.message_handler(commands=["send_mute"])
-def send_mute():
-    for admin in admins:
-        if admin == message.from_user.id:
-            bot.reply(mute)
-
-@dp.message_handler(commands=["send_mute_list"])
-def send_mute_list():
-    for admin in admins:
-        if admin == message.from_user.id:
-            bot.reply(mute_list)
 
 # запуск бота
 if __name__ == '__main__':
