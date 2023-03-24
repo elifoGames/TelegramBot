@@ -1,6 +1,6 @@
 # private settings
-bot_token = "BOT_TOKEN"
-private_code = "********"
+bot_token = "6091667438:AAF16BIpbGKVtq5maxwX_Ruj5GDSzptsHLE"
+private_code = "08122009"
 
 # files
 symbols_file = "symbols.json"
